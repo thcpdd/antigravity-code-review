@@ -1,0 +1,11 @@
+{
+  "name": "antigravity-code-review",
+  "displayName": "Antigravity Code Review",
+  "version": "1.0.0",
+  "description": "A code review plugin that reviews workspace changes, branches, and commits in an isolated subagent.",
+  "suggestedPrompts": [
+    "Review my current workspace changes",
+    "Review my current branch against main",
+    "Review the latest commit and fix high-confidence issues"
+  ]
+}
