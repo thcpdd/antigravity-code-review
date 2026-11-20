@@ -32,7 +32,8 @@ ocr delegate preview --format json [scope-flags]
 - Default (no range/commit flags): workspace mode (staged + unstaged + untracked).
 - Range mode: `--from <ref>` (optional `--to <ref>`, defaults to `HEAD`).
 - Commit mode: `-c <hash>`.
-- Optional: `--exclude <patterns>`, `--rule <path>`, `-b "<summary>"` or `-B <file>`.
+- Optional: `--exclude <patterns>` (use this when the coordinator provides files/patterns to ignore), `--rule <path>`, `-b "<summary>"` or `-B <file>`.
+- **Target file allowlist (when provided)**: If the prompt specifies an explicit list of target files (e.g., files modified by the main agent), filter `reviewable_files` to only those paths; record other workspace files in `skipped_files` as outside the requested target list and do not fetch rules or diffs for them.
 - **Version fallback**: If `--format json` fails with `unknown flag: --format`, rerun without `--format json` and use the text output directly (do not invent JSON fields).
 - **Oversized background**: If `-B` fails due to size limits (1 MiB / 8000 chars), summarize the key requirements into a concise `-b` string and retry without `-B`.
 

@@ -21,10 +21,16 @@ Hand off the entire review workflow to an isolated subagent so that:
 
 1. **Extract intent from the user request**
    - **Target scope**:
-     - Workspace changes (default when no range/commit is given)
-     - Branch/range comparison (e.g., `from <ref>` / `to <ref>`)
-     - Single commit (e.g., `HEAD` or a commit hash)
-     - Any user-specified exclusions or custom rule paths
+     - **Default (when the user did not specify files, range, commit, or full workspace)**: Only review the files modified or created by the main agent in the current conversation.
+       - If the main agent modified files in this conversation, pass whichever list is shorter to the subagent:
+         - **Fewer modified files**: pass the explicit target file list (so other unrelated workspace changes are skipped).
+         - **Many modified files with only a few unrelated workspace changes**: pass the unrelated files as an exclusion list (for `--exclude`) instead of listing all modified files.
+       - If the main agent has **not** modified any files in this conversation, do **not** invoke the subagent; inform the user directly that no files were modified by the main agent in this conversation and ask them to specify what to review (e.g., specific files, workspace changes, branch, or commit).
+     - **Explicitly specified**:
+       - Full workspace changes or specific file paths
+       - Branch/range comparison (e.g., `from <ref>` / `to <ref>`)
+       - Single commit (e.g., `HEAD` or a commit hash)
+       - Any user-specified exclusions or custom rule paths
    - **Background context**:
      - If the user provided background context or a background file, pass it through.
      - Otherwise, if the main conversation already discussed the purpose of these changes, write a concise 1–3 sentence summary to pass to the reviewer.
