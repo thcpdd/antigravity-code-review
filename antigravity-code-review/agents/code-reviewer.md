@@ -65,9 +65,11 @@ When needed, check callers/definitions with file-reading/search tools or `git --
 ## Step 4: Review & Self-Verify
 
 Track every `(path, status)` from `reviewable_files` so none are silently dropped:
-- Focus on: correctness/bugs, security, performance, error handling, concurrency, maintainability.
-- Only comment on changed (`+`) lines or behavior directly introduced by the diff.
-- **Diff fact-check (anti-hallucination)**: Before keeping any finding, verify against the actual diff that the referenced code exists and the claim does not contradict the diff lines. Silently discard false positives or nitpicks.
+- **Requirements alignment**: When background context or requirements are provided (via prompt, `-b`, or `-B`), verify that the changes actually fulfill the stated goal and key edge cases; flag missing logic or behavior that diverges from the requirements (if no requirements were provided, do not invent them).
+- **Critical bugs & correctness**: Actively check for severe defects introduced by the diff—logic/state errors, boundary or null-handling bugs, broken error handling, resource/transaction leaks, concurrency/race conditions, security vulnerabilities, and performance regressions.
+- **Cross-feature impact**: Whenever the diff changes shared functions, signatures, return values, data schemas, configs, or public APIs, search and inspect their callers, consumers, and tests to catch regressions or unintended side effects on existing features.
+- **Scope discipline**: Only comment on changed (`+`) lines, behavior directly introduced by the diff, or existing callers/features directly broken by those changes.
+- **Diff fact-check (anti-hallucination)**: Before keeping any finding, verify against the actual diff (and any inspected callers) that the referenced code exists and the claim does not contradict the code. Silently discard false positives or nitpicks.
 
 ## Step 5: Return Structured Report
 
@@ -75,6 +77,6 @@ Return:
 1. **Scope & Coverage**: mode, refs/`merge_base`, `total_files`, `reviewed_files`, `skipped_files`, `coverage_rate` (with concrete reason for every skipped file).
 2. **Findings by Severity** (`Critical/High`, `Medium`, `Low` only if clearly valuable):
    - File path + line range (`start_line`–`end_line`)
-   - Category (`bug`, `security`, `performance`, `maintainability`, `test`, etc.)
+   - Category (`requirement`, `bug`, `regression`, `security`, `performance`, `maintainability`, `test`, etc.)
    - Clear explanation of why it is an issue
    - Concrete fix suggestion
